@@ -1,0 +1,31 @@
+version: '3'
+
+networks:
+  phpfox5_locust:
+    driver: bridge
+
+services:
+  master:
+    #image: foxstystem/locust:v5
+    restart: always
+    build: .
+    ports:
+      - "8089:8089"
+    volumes:
+      - ./:/mnt/locust
+    networks:
+      - phpfox5_locust
+
+    command: -f /mnt/locust/locustfile.py --master --host 'https://cloudcall-s01.phpfox.com/pgsql/graphql'
+
+  worker:
+#    image: foxstystem/locust:v5
+    build: .
+    depends_on:
+      - master
+    networks:
+      - phpfox5_locust
+    volumes:
+      - ./:/mnt/locust
+    command: -f /mnt/locust/locustfile.py --worker --master-host master
+
