@@ -1,12 +1,12 @@
 version: '3'
 
 networks:
-  phpfox5_locust:
+  locust:
     driver: bridge
 
 services:
   master:
-    #image: foxstystem/locust:v5
+    image: metafox-locust
     restart: always
     build: .
     ports:
@@ -14,18 +14,18 @@ services:
     volumes:
       - ./:/mnt/locust
     networks:
-      - phpfox5_locust
+      - locust
 
-    command: -f /mnt/locust/locustfile.py --master --host 'https://cloudcall-s01.phpfox.com/pgsql/graphql'
+    command: -f /mnt/locust/locustfile/home.py --master --host 'https://production.metafox.app'
 
   worker:
-#    image: foxstystem/locust:v5
+    image: foxstystem/locust
     build: .
     depends_on:
       - master
     networks:
-      - phpfox5_locust
+      - locust
     volumes:
       - ./:/mnt/locust
-    command: -f /mnt/locust/locustfile.py --worker --master-host master
+    command: -f /mnt/locust/pages/home.py --worker --master-host master
 

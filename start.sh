@@ -1,0 +1,1 @@
+locust --locustfile locustfiles.py --host https://production.metafox.app --autostart -u 10
