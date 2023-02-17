@@ -1,6 +1,7 @@
 from locust import TaskSet, task, HttpUser
 from common.auth import login, pick_user
 from common.config import fake
+from datetime import datetime, timedelta
 
 
 class ApiRequests(TaskSet):
@@ -81,8 +82,8 @@ class ApiRequests(TaskSet):
             "is_online": 0,
             "owner_id": 0,
             "attachments": [],
-            "start_time": "2023-02-14T06:58:49.200347Z",
-            "end_time": "2023-02-15T07:58:00.000Z",
+            "start_time": (datetime.now() + timedelta(hours=1)).isoformat(),
+            "end_time": (datetime.now() + timedelta(days=2)).isoformat(),
             "location": {
                 "address": "Hồ Chí Minh, Thành phố Hồ Chí Minh, Việt Nam",
                 "lat": 10.8230989,
@@ -238,7 +239,7 @@ class ApiRequests(TaskSet):
         self.client.get('/api/v1/marketplace?view=my_pending&page=1')
         self.client.get('/api/v1/marketplace?view=invite&page=1')
         self.client.get('/api/v1/marketplace?view=history&page=1')
-        self.client.get('/api/v1/marketplace?view=expired&page=1')
+        self.client.get('/api/v1/marketplace?view=expire&page=1')
         self.client.get('/api/v1/marketplace?view=friend&page=1')
         self.client.get('/api/v1/marketplace?view=pending&page=1')
         self.client.get('/api/v1/marketplace-invoice')
@@ -408,7 +409,8 @@ class ApiRequests(TaskSet):
     @task(1)
     def create_collection(self):
         self.client.post('/api/v1/saveditems-collection', None, {
-            'name': fake.sentence(nb_words=5)
+            'name': fake.sentence(nb_words=5),
+            'privacy': 4,
         })
         pass
 
